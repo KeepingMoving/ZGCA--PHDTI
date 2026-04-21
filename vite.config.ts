@@ -6,9 +6,9 @@ import {defineConfig, loadEnv} from 'vite';
 export default defineConfig(({mode}) => {
   const env = loadEnv(mode, '.', '');
   return {
-    // Use relative asset URLs so the site can be hosted under a project subpath
-    // such as GitHub Pages: https://<user>.github.io/<repo>/
-    base: './',
+    // GitHub Pages project sites are served from /<repo>/, so build assets
+    // against the current repository name.
+    base: '/ZGCA--PHDTI/',
     plugins: [react(), tailwindcss()],
     define: {
       'process.env.GEMINI_API_KEY': JSON.stringify(env.GEMINI_API_KEY),

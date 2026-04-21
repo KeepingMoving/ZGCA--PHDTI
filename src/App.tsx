@@ -20,6 +20,14 @@ const BACKGROUNDS = [
   'https://images.unsplash.com/photo-1550684376-efcbd6e3f031?q=80&w=2670&auto=format&fit=crop', // Light mint soft
 ];
 
+function resolveImageSrc(src?: string) {
+  if (!src) return '';
+  if (/^(?:https?:)?\/\//i.test(src) || src.startsWith('data:')) return src;
+
+  const normalized = src.replace(/^\/+/, '');
+  return `${import.meta.env.BASE_URL}${normalized}`;
+}
+
 export default function App() {
   const [view, setView] = useState<'home' | 'collection'>('home');
   const [isDrawing, setIsDrawing] = useState(false);
@@ -176,7 +184,9 @@ export default function App() {
   const downloadCard = async () => {
     if (!result) return;
     try {
-      const url = result.image || `https://picsum.photos/seed/${result.id}_nanobanana/600/600`;
+      const url = result.image
+        ? resolveImageSrc(result.image)
+        : `https://picsum.photos/seed/${result.id}_nanobanana/600/600`;
       const dataUrl = await generateCardImage(result, url);
       const link = document.createElement('a');
       link.href = dataUrl;
@@ -449,7 +459,7 @@ export default function App() {
               <div className="relative aspect-[4/3] h-48 sm:h-56 w-[calc(100%-2rem)] mx-auto mt-4 rounded-[2rem] bg-slate-100 overflow-hidden group shrink-0 border-[3px] border-white/80 shadow-sm">
                 <img 
                   // Use specific persona image if specified, otherwise fallback to placeholder
-                  src={result.image || `https://picsum.photos/seed/${result.id}_nanobanana/600/400`} 
+                  src={result.image ? resolveImageSrc(result.image) : `https://picsum.photos/seed/${result.id}_nanobanana/600/400`} 
                   alt={result.title}
                   className="w-full h-full object-cover"
                 />
